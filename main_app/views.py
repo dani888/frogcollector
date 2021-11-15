@@ -2,7 +2,8 @@ from django.shortcuts import render
 
 # Add the following import
 from django.http import HttpResponse
-from django.views.generic.edit import CreateView
+# Add UdpateView & DeleteView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Frog
 
 # Define the home view
@@ -23,6 +24,15 @@ def frogs_detail(request, frog_id):
 class FrogCreate(CreateView):
   model = Frog
   fields = '__all__'
+  success_url = '/frogs/'
+
+class FrogUpdate(UpdateView):
+  model = Frog
+  # Let's disallow the renaming of a cat by excluding the name field!
+  fields = ['breed', 'description', 'age']
+
+class FrogDelete(DeleteView):
+  model = Frog
   success_url = '/frogs/'
 
 # class Frog:  # Note that parens are optional if not inheriting from another class
