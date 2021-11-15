@@ -6,4 +6,5 @@ urlpatterns = [
   path('about/', views.about, name='about'),
   path('frogs/', views.frogs_index, name='index'),
   path('frogs/<int:frog_id>/', views.frogs_detail, name='detail'),
+  path('frogs/create/', views.FrogCreate.as_view(), name='frogs_create'),
 ]
