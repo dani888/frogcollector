@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Add the following import
 from django.http import HttpResponse
 # Add UdpateView & DeleteView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Frog
+from .forms import FeedingForm
 
 # Define the home view
 def home(request):
@@ -19,7 +20,24 @@ def frogs_index(request):
 
 def frogs_detail(request, frog_id):
   frog = Frog.objects.get(id=frog_id)
-  return render(request, 'frogs/detail.html', { 'frog': frog })
+  # instantiate FeedingForm to be rendered in the template
+  feeding_form = FeedingForm()
+  return render(request, 'frogs/detail.html', {
+    # include the cat and feeding_form in the context
+    'frog': frog, 'feeding_form': feeding_form
+  })
+
+def add_feeding(request, frog_id):
+  # create the ModelForm using the data in request.POST
+  form = FeedingForm(request.POST)
+  # validate the form
+  if form.is_valid():
+    # don't save the form to the db until it
+    # has the cat_id assigned
+    new_feeding = form.save(commit=False)
+    new_feeding.frog_id = frog_id
+    new_feeding.save()
+  return redirect('detail', frog_id=frog_id)
 
 class FrogCreate(CreateView):
   model = Frog
