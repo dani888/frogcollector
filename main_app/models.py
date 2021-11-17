@@ -19,7 +19,7 @@ class Toy(models.Model):
 
   def get_absolute_url(self):
     return reverse('toys_detail', kwargs={'pk': self.id})
-
+# toys added
 # Create your models here.
 class Frog(models.Model):
   name = models.CharField(max_length=100)
