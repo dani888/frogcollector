@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 # Add the following import
 from django.http import HttpResponse
 # Add UdpateView & DeleteView
+from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Frog, Toy
 from .forms import FeedingForm
@@ -59,6 +60,24 @@ class FrogUpdate(UpdateView):
 class FrogDelete(DeleteView):
   model = Frog
   success_url = '/frogs/'
+
+class ToyList(ListView):
+  model = Toy
+
+class ToyDetail(DetailView):
+  model = Toy
+
+class ToyCreate(CreateView):
+  model = Toy
+  fields = '__all__'
+
+class ToyUpdate(UpdateView):
+  model = Toy
+  fields = ['name', 'color']
+
+class ToyDelete(DeleteView):
+  model = Toy
+  success_url = '/toys/'
 
 # class Frog:  # Note that parens are optional if not inheriting from another class
 #   def __init__(self, name, breed, description, age):
