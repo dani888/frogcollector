@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 # Add UdpateView & DeleteView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .models import Frog
+from .models import Frog, Toy
 from .forms import FeedingForm
 
 # Define the home view
@@ -21,10 +21,12 @@ def frogs_index(request):
 def frogs_detail(request, frog_id):
   frog = Frog.objects.get(id=frog_id)
   # instantiate FeedingForm to be rendered in the template
+  toys_frog_doesnt_have = Toy.objects.exclude(id__in = frog.toys.all().values_list('id'))
   feeding_form = FeedingForm()
   return render(request, 'frogs/detail.html', {
     # include the cat and feeding_form in the context
-    'frog': frog, 'feeding_form': feeding_form
+    'frog': frog, 'feeding_form': feeding_form,
+    'toys': toys_frog_doesnt_have
   })
 
 def add_feeding(request, frog_id):
@@ -37,6 +39,11 @@ def add_feeding(request, frog_id):
     new_feeding = form.save(commit=False)
     new_feeding.frog_id = frog_id
     new_feeding.save()
+  return redirect('detail', frog_id=frog_id)
+
+def assoc_toy(request, frog_id, toy_id):
+  # Note that you can pass a toy's id instead of the whole object
+  Frog.objects.get(id=frog_id).toys.add(toy_id)
   return redirect('detail', frog_id=frog_id)
 
 class FrogCreate(CreateView):
